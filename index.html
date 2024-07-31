@@ -11,7 +11,7 @@
 <body>
     <div class="wallpaper"></div>
     <div class="player-container">
-        <div id="songTitle">Song Title</div>
+        <div id="songTitle" class="title"><p>Song Title</p></div>
         <div id="player"></div>
         <div class="player-controls">
             <button onclick="previousVideo()"><svg class="ctrls" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-chevron-left"><circle cx="12" cy="12" r="10"/><path d="m14 16-4-4 4-4"/></svg></button>
@@ -30,142 +30,158 @@
     
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        var videoData = {
-            'ehNXOIpRr6c': 'Together',
-            'dcnRHT4ej9g': 'With Faith'
-        };
+        var videoHistory = [];
 
-        var videoIds = Object.keys(videoData);
-        var player;
-        var history = [];
-        var currentIndex = -1;
-        var isPlaying = false;
+var videoData = {
+    'ehNXOIpRr6c': 'Together',
+    'dcnRHT4ej9g': 'With Faith'
+};
 
-        function onYouTubeIframeAPIReady() {
-            loadRandomVideo();
-        }
+var videoIds = Object.keys(videoData);
+var player;
+var currentIndex = -1;
+var isPlaying = false;
+var currentVideoId;
 
-        function loadRandomVideo() {
-            var randomVideoId = videoIds[Math.floor(Math.random() * videoIds.length)];
-            loadVideo(randomVideoId);
-        }
+function onYouTubeIframeAPIReady() {
+    console.log('YouTube API is ready');
+    loadRandomVideo();
+}
 
-        function loadVideo(videoId) {
-            if (player) {
-                player.loadVideoById(videoId);
-            } else {
-                player = new YT.Player('player', {
-                    height: '0',
-                    width: '0',
-                    videoId: videoId,
-                    events: {
-                        'onReady': onPlayerReady,
-                        'onStateChange': onPlayerStateChange
-                    }
-                });
-            }
-            history.push(videoId);
-            currentIndex = history.length - 1;
-            updateSongTitle(videoId);
-        }
+function loadRandomVideo() {
+    console.log('Loading random video');
+    var randomVideoId = videoIds[Math.floor(Math.random() * videoIds.length)];
+    loadVideo(randomVideoId);
+}
 
-        function onPlayerReady(event) {
-            event.target.setVolume(100);
-            event.target.playVideo();
-            isPlaying = true;
-            updatePlayPauseIcons();
-        }
-
-        function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.ENDED) {
-                nextVideo();
-            }
-        }
-
-        function playVideo() {
-            player.playVideo();
-            isPlaying = true;
-            updatePlayPauseIcons();
-        }
-
-        function pauseVideo() {
-            player.pauseVideo();
-            isPlaying = false;
-            updatePlayPauseIcons();
-        }
-
-        function togglePlayPause() {
-            if (isPlaying) {
-                pauseVideo();
-            } else {
-                playVideo();
-            }
-        }
-
-        function updatePlayPauseIcons() {
-            var playIcon = document.getElementById('playIcon');
-            var pauseIcon = document.getElementById('pauseIcon');
-            if (isPlaying) {
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'inline-block';
-            } else {
-                playIcon.style.display = 'inline-block';
-                pauseIcon.style.display = 'none';
-            }
-        }
-
-        function nextVideo() {
-            if (currentIndex < history.length - 1) {
-                currentIndex++;
-                player.loadVideoById(history[currentIndex]);
-                updateSongTitle(history[currentIndex]);
-            } else {
-                loadRandomVideo();
-            }
-        }
-
-        function previousVideo() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                player.loadVideoById(history[currentIndex]);
-                updateSongTitle(history[currentIndex]);
-            }
-        }
-
-        function toggleMute() {
-            var muteIcon = document.getElementById('muteIcon');
-            var unmuteIcon = document.getElementById('unmuteIcon');
-            if (player.isMuted()) {
-                player.unMute();
-                muteIcon.style.display = 'inline-block';
-                unmuteIcon.style.display = 'none';
-            } else {
-                player.mute();
-                muteIcon.style.display = 'none';
-                unmuteIcon.style.display = 'inline-block';
-            }
-        }
-
-        function updateSongTitle(videoId) {
-            var songTitle = document.getElementById('songTitle');
-            songTitle.textContent = videoData[videoId] || 'Unknown Title';
-        }
-
-        document.addEventListener('keydown', function(event) {
-            if (event.code === 'Space') {
-                event.preventDefault();
-                togglePlayPause();
+function loadVideo(videoId) {
+    console.log('Loading video:', videoId);
+    currentVideoId = videoId;
+    if (player) {
+        player.loadVideoById(videoId);
+    } else {
+        player = new YT.Player('player', {
+            height: '0',
+            width: '0',
+            videoId: videoId,
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
             }
         });
+    }
+    videoHistory.push(videoId);
+    currentIndex = videoHistory.length - 1;
+    updateSongTitle(videoId);
+}
 
-        // Initialize with play button shown
-        window.addEventListener('load', function() {
-            var playIcon = document.getElementById('playIcon');
-            var pauseIcon = document.getElementById('pauseIcon');
-            playIcon.style.display = 'inline-block';
-            pauseIcon.style.display = 'none';
-            isPlaying = false;
-        });
+function onPlayerReady(event) {
+    console.log('Player is ready');
+    event.target.setVolume(100);
+    event.target.playVideo();
+    isPlaying = true;
+    updatePlayPauseIcons();
+}
+
+function onPlayerStateChange(event) {
+    console.log('Player state changed:', event.data);
+    if (event.data === YT.PlayerState.ENDED) {
+        nextVideo();
+    }
+}
+
+function updateSongTitle(videoId) {
+    var songTitle = document.getElementById('songTitle');
+    var title = videoData[videoId] || 'Unknown Title';
+    songTitle.innerHTML = '<p>' + title + '</p>';
+    console.log('Updating song title. Video ID:', videoId, 'Title:', title);
+}
+
+function nextVideo() {
+    if (currentIndex < videoHistory.length - 1) {
+        currentIndex++;
+        currentVideoId = videoHistory[currentIndex];
+        player.loadVideoById(currentVideoId);
+    } else {
+        loadRandomVideo();
+    }
+    updateSongTitle(currentVideoId);
+    console.log('Changing to next video:', currentVideoId);
+}
+
+function previousVideo() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        currentVideoId = videoHistory[currentIndex];
+        player.loadVideoById(currentVideoId);
+    } else {
+        loadRandomVideo();
+    }
+    updateSongTitle(currentVideoId);
+    console.log('Changing to previous video:', currentVideoId);
+}
+
+function playVideo() {
+    player.playVideo();
+    isPlaying = true;
+    updatePlayPauseIcons();
+}
+
+function pauseVideo() {
+    player.pauseVideo();
+    isPlaying = false;
+    updatePlayPauseIcons();
+}
+
+function togglePlayPause() {
+    if (isPlaying) {
+        pauseVideo();
+    } else {
+        playVideo();
+    }
+}
+
+function updatePlayPauseIcons() {
+    var playIcon = document.getElementById('playIcon');
+    var pauseIcon = document.getElementById('pauseIcon');
+    if (isPlaying) {
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'inline-block';
+    } else {
+        playIcon.style.display = 'inline-block';
+        pauseIcon.style.display = 'none';
+    }
+}
+
+function toggleMute() {
+    var muteIcon = document.getElementById('muteIcon');
+    var unmuteIcon = document.getElementById('unmuteIcon');
+    if (player.isMuted()) {
+        player.unMute();
+        muteIcon.style.display = 'inline-block';
+        unmuteIcon.style.display = 'none';
+    } else {
+        player.mute();
+        muteIcon.style.display = 'none';
+        unmuteIcon.style.display = 'inline-block';
+    }
+}
+
+// Event listeners
+document.addEventListener('keydown', function(event) {
+    if (event.code === 'Space') {
+        event.preventDefault();
+        togglePlayPause();
+    }
+});
+
+window.addEventListener('load', function() {
+    var playIcon = document.getElementById('playIcon');
+    var pauseIcon = document.getElementById('pauseIcon');
+    playIcon.style.display = 'inline-block';
+    pauseIcon.style.display = 'none';
+    isPlaying = false;
+});
     </script>
 </body>
 </html>
