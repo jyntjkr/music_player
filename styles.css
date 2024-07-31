@@ -1,0 +1,54 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+.wallpaper {
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    position: absolute;
+    background-image: url(Public/neonflames.png);
+    background-size: cover;
+}
+.player-container {
+    background: transparent;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: 280px;
+}
+button {
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+}
+.ctrls {
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    color: white;
+}
+.ctrls:hover {
+    stroke: #f89ab9;
+}
+#muteButton {
+    color: white;
+}
+.sound {
+    padding: 20px;
+    position: fixed;
+    bottom: 20px;
+    right: 10%;
+    transform: translateX(-50%);
+}
