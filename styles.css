@@ -1,7 +1,13 @@
+.smoothed {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
     display: flex;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "IBM Plex Sans", Segoe UI, Helvetica, Arial, sans-serif;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -20,9 +26,17 @@ body {
     background: transparent;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 20px 20px 0px 20px;
     text-align: center;
     width: 280px;
+}
+
+.player-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap:20px;
 }
 button {
     background-color: transparent;
@@ -30,7 +44,7 @@ button {
     border-radius: 5px;
     color: white;
     cursor: pointer;
-    padding: 10px 20px;
+    /* padding: 10px 20px; */
     margin: 5px;
     font-size: 16px;
 }
@@ -45,17 +59,10 @@ button {
 #muteButton {
     color: white;
 }
-.sound {
-    padding: 20px;
-    position: fixed;
-    bottom: 20px;
-    right: 10%;
-    transform: translateX(-50%);
-}
 
 .title {
     color: white;
-    font-size: 20px;
+    font-size: 25px;
     margin: 20px;
     font-style: italic;
 }
